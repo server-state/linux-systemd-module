@@ -7,7 +7,9 @@
   "scripts": {
     "test": "jest --coverage",
     "lint": "eslint ./src ./tests",
-    "build": "webpack --config webpack.config.js --mode production"
+    "build": "webpack --config webpack.config.js --mode production",
+    "install-units": "./tests/install-systemd-units.sh",
+    "cleanup-units": "./tests/cleanup-systemd-units.sh"
   },
   "repository": {
     "type": "git",
