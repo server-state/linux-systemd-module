@@ -2,9 +2,6 @@ language: node_js
 node_js:
   - 10
 
-install:
-  - npm run install-units
-
 script:
   - npm install -g coveralls
   - npm run lint
@@ -14,6 +11,3 @@ script:
 
 notifications:
   slack: serverstate:PcPgLd43m8TKiXrxfHb1mKff
-
-after_script:
-  - npm run cleanup-units
