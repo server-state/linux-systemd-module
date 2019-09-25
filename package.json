@@ -28,5 +28,10 @@
   },
   "dependencies": {
     "shell-exec": "^1.0.2"
+  },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "/tests/_gen-shell-exec-mock.js"
+    ]
   }
 }
