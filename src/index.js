@@ -1,16 +1,10 @@
+const constants = require('./constants');
 const shellExec = require('shell-exec');
 
-const properties = {
-    any: 'LoadState,ActiveState,SubState,Description,Id,Result,UnitFileState',
-    service: 'CleanResult,MainPID,Type,Restart,MemoryCurrent,Nice,RemainAfterExit',
-    mount: 'Where,What,Type,LazyUnmount'
-    //target: '',
-    //timer: '',
-    //slice: ''
-};
-
 function getProperties(type, addProps) {
-    return properties.any + (properties[type] ? ',' + properties[type] : '') + (addProps ? addProps : '');
+    return constants.PROPERTIES.any + 
+        (constants.PROPERTIES[type] ? ',' + constants.PROPERTIES[type] : '') + 
+        (addProps ? ',' + addProps : '');
 }
 
 function convertProperty(name, value) {
@@ -43,20 +37,28 @@ module.exports = async function (units) {
 
     for (const unit of units) {
         // clean up given unit name
-        const array = unit.name.split('.');
-        const type = (array[1] ? array[1] : 'service');
-        unit.name = array[0] + '.' + type;
+        if (!unit || !unit.name || unit.name.trim() === 0)
+            throw new Error('No unit name given!');
+
+        let array = unit.name.split('.');
+        if (array.length < 2) {
+            unit.name = unit.name  + '.service';
+            array.push('service');
+        }        
 
         if (result[unit.name])
             throw new Error('Unit already requested: ' + unit);
 
-        const properties = {UnitType: type};
+        const properties = {UnitType: array[1]};
         // request properties to given unit
-        const output = await shellExec('systemctl show ' + unit.name + ' --property ' + getProperties(type, unit.addProps));
+        const output = await shellExec('systemctl show ' + unit.name + ' --property ' + getProperties(array[1], unit.addProps));
         // parse down given properties to objects
         output.stdout.split('\n').forEach(element => {
-            const def = element.split('=');
-            properties[def[0]] = convertProperty(def[0], def[1]);
+            // skip empty new lines
+            if (element.length > 0) {
+                const def = element.split('=');
+                properties[def[0]] = convertProperty(def[0], def[1]);
+            }
         });
 
         result[unit.name] = properties;
