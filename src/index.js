@@ -7,22 +7,20 @@ function getProperties(type, addProps) {
         (addProps ? ',' + addProps : '');
 }
 
-function convertProperty(name, value) {
-    switch (name) {
-    case 'MainPID':
-        return parseInt(value);
-    case 'MemoryCurrent':
-        return parseInt(value);
-    case 'Nice':
-        return parseInt(value);
-
-    case 'RemainAfterExit':
-    case 'LazyUnmount':
+function convertProperty(value) {
+    if (value === 'yes' || value === 'no')
         return (value === 'yes');
+    
+    //if (/^[-+]?\d+$/.test(value))
+    //if (Number.isSafeInteger(value))
+    //    return parseInt(value);
 
-    default:
-        return value;
-    }
+    //if (/[-+]?([0-9]*\.[0-9]+|[0-9]+)/.test(value))
+    const conv = parseFloat(value);
+    if (!Number.isNaN(conv))
+        return conv;
+    
+    return value;
 }
 
 /**
@@ -65,7 +63,7 @@ module.exports = async function (units) {
             // skip empty new lines
             if (element.length > 0) {
                 const def = element.split('=');
-                properties[def[0]] = convertProperty(def[0], def[1]);
+                properties[def[0]] = convertProperty(def[1]);
             }
         });
 
