@@ -44,8 +44,9 @@ module.exports = async function (units) {
 
     for (const unit of units) {
         // clean up given unit name
-        if (!unit || !unit.name || unit.name.trim() === 0)
-            throw new Error('No unit name given!');
+        unit.name = (unit.name ? unit.name.trim() : '');
+        if (!unit.name)
+            throw new Error('Missing or empty unit name!');
 
         let array = unit.name.split('.');
         if (array.length < 2) {

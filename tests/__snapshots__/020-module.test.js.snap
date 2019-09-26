@@ -22,9 +22,9 @@ Object {
 }
 `;
 
-exports[`Test given properties via argument calls should call with mount properties while given simple mount unit 1`] = `
+exports[`Test given properties via argument calls should call with mount properties while given plain mount unit 1`] = `
 Object {
-  "simpleMount.mount": Object {
+  "plainMount.mount": Object {
     "ActiveEnterTimestamp": "",
     "ActiveEnterTimestampMonotonic": "",
     "ActiveState": "",
@@ -85,6 +85,31 @@ Object {
 }
 `;
 
+exports[`Test given properties via argument calls should call with service properties while given plain service unit 1`] = `
+Object {
+  "plainService.service": Object {
+    "ActiveEnterTimestamp": "",
+    "ActiveEnterTimestampMonotonic": "",
+    "ActiveState": "",
+    "CleanResult": "",
+    "Description": "",
+    "Id": "placeholderId",
+    "LoadState": "",
+    "MainPID": 0,
+    "MemoryCurrent": 0,
+    "Nice": 0,
+    "RemainAfterExit": false,
+    "Restart": "",
+    "Result": "",
+    "SubState": "",
+    "TasksCurrent": "",
+    "Type": "",
+    "UnitFileState": "",
+    "UnitType": "service",
+  },
+}
+`;
+
 exports[`Test given properties via argument calls should call with service properties while given service unit with additional properties 1`] = `
 Object {
   "additionalService.service": Object {
@@ -111,27 +136,39 @@ Object {
 }
 `;
 
-exports[`Test given properties via argument calls should call with service properties while given simple service unit 1`] = `
+exports[`Test given properties via argument calls should call with slice properties while given plain slice unit 1`] = `
 Object {
-  "simpleService.service": Object {
+  "plainSlice.slice": Object {
     "ActiveEnterTimestamp": "",
     "ActiveEnterTimestampMonotonic": "",
     "ActiveState": "",
-    "CleanResult": "",
     "Description": "",
     "Id": "placeholderId",
     "LoadState": "",
-    "MainPID": 0,
-    "MemoryCurrent": 0,
-    "Nice": 0,
-    "RemainAfterExit": false,
-    "Restart": "",
     "Result": "",
     "SubState": "",
     "TasksCurrent": "",
-    "Type": "",
     "UnitFileState": "",
-    "UnitType": "service",
+    "UnitType": "slice",
+  },
+}
+`;
+
+exports[`Test given properties via argument calls should call with slice properties while given slice unit with additional properties 1`] = `
+Object {
+  "additionalSlice.slice": Object {
+    "ActiveEnterTimestamp": "",
+    "ActiveEnterTimestampMonotonic": "",
+    "ActiveState": "",
+    "ControlGroup": "",
+    "Description": "",
+    "Id": "placeholderId",
+    "LoadState": "",
+    "Result": "",
+    "SubState": "",
+    "TasksCurrent": "",
+    "UnitFileState": "",
+    "UnitType": "slice",
   },
 }
 `;

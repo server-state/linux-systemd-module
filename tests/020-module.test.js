@@ -28,13 +28,54 @@ describe('Test simple module behaviour', () => {
     });
 });
 
+const INVALID_OPTIONS = [
+    [
+        'string',
+        'I am a string'
+    ],
+    [
+        'boolean',
+        true
+    ],
+    [
+        'number',
+        3.14
+    ],
+    [
+        'object',
+        { prop1: 'prop1', prop2: 'prop2' }
+    ],
+    [
+        'empty array',
+        []
+    ],
+    [
+        'invalid array elements',
+        ['string', true, 3.14]
+    ],
+    [
+        'empty unit name',
+        [{name: null}]
+    ],
+    [
+        'whitespace unit name',
+        [{name: '  '}]
+    ]
+];
 
-const TEST_ARGUMENTS = [
+describe('Test invalid given options', () => {
+    it.each(INVALID_OPTIONS)('should reject with invalid option format %s', (_type, value) => {
+        expect(serverModule(value)).rejects.toThrow();
+    });
+});
+
+
+const PROPERTY_DEFINITIONS = [
     [
         'service',
-        'simple service unit',
-        'simpleService.service',
-        'simpleService.service',
+        'plain service unit',
+        'plainService.service',
+        'plainService.service',
         ''
     ],
     [
@@ -53,9 +94,9 @@ const TEST_ARGUMENTS = [
     ],
     [
         'mount',
-        'simple mount unit',
-        'simpleMount.mount',
-        'simpleMount.mount',
+        'plain mount unit',
+        'plainMount.mount',
+        'plainMount.mount',
         ''
     ],
     [
@@ -64,6 +105,20 @@ const TEST_ARGUMENTS = [
         'additionalMount.mount',
         'additionalMount.mount',
         'Delegate'
+    ],
+    [
+        'slice',
+        'plain slice unit',
+        'plainSlice.slice',
+        'plainSlice.slice',
+        ''
+    ],
+    [
+        'slice',
+        'slice unit with additional properties',
+        'additionalSlice.slice',
+        'additionalSlice.slice',
+        'ControlGroup'
     ],
     [ // virtual test type
         'other',
@@ -75,7 +130,7 @@ const TEST_ARGUMENTS = [
 ];
 
 describe('Test given properties via argument calls', () => {
-    it.each(TEST_ARGUMENTS)('should call with %s properties while given %s', (type, _description, name, fullName, addProps) => {
+    it.each(PROPERTY_DEFINITIONS)('should call with %s properties while given %s', (type, _description, name, fullName, addProps) => {
         const argument = [{ name: name, addProps: addProps }];
         expect(serverModule(argument)).resolves.toMatchSnapshot();
 
