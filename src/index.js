@@ -27,7 +27,14 @@ function convertProperty(name, value) {
 
 /**
  * A module for the server-state system
- * @returns A JSON-serializable (via `JSON.stringify()`) version information about the server state
+ * 
+ * A module to view the current status of your systemd services
+ * 
+ * @throws if no units get passed to the function
+ * @throws if a unit gets passed two or more times
+ * 
+ * @argument options array of systemd units to check
+ * @returns {object|array|string|number|boolean} A JSON-serializable (via `JSON.stringify()`) version information about the server state
  */
 module.exports = async function (units) {
     if (!units || !units.length)
