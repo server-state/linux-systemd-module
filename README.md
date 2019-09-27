@@ -49,7 +49,7 @@ server.addModule('systemd', require('@server-state/systemd-module'), [
     {
         name: 'user.slice',
         addProps: 'TasksCurrent',
-        default: false
+        defaults: false
     }
 ]);
 ```
@@ -109,7 +109,7 @@ The key `name` is mandatory and defines the systemd unit.
 For different unit types, use the unit extension from systemd, for example `system.slice` or `boot.mount`.
 If no extension is specified, a `service` unit is assumed (systemd default).
 
-There are default preset properties for different unit types, you can use or disable with the `default` key set to `false`.
+There are default preset properties for different unit types you can use or disable them with the `defaults` key set to `false`.
 (See [constants.js](https://github.com/server-state/systemd-module/blob/master/src/constants.js))
 
 You also can give your own properties (comma separated) to add to the resulting object, for example `Requires,After`.

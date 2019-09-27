@@ -1,9 +1,9 @@
 const constants = require('./constants');
 const shellExec = require('shell-exec');
 
-function getProperties(type, addProps) {
-    return constants.PROPERTIES.any + 
-        (constants.PROPERTIES[type] ? ',' + constants.PROPERTIES[type] : '') + 
+function getProperties(type, addProps, defaults) {
+    return (defaults ? constants.PROPERTIES.any : '') + 
+        (defaults && constants.PROPERTIES[type] ? ',' + constants.PROPERTIES[type] : '') + 
         (addProps ? ',' + addProps : '');
 }
 
@@ -17,6 +17,12 @@ function convertProperty(value) {
     
     return value;
 }
+
+const DEFAULT_UNIT_DEF = {
+    name: '',
+    addProps: '',
+    defaults: true
+};
 
 /**
  * A module for the server-state system
@@ -36,9 +42,16 @@ module.exports = async function (units) {
 
     const result = {};
 
-    for (const unit of units) {
-        // clean up given unit name
-        unit.name = (unit.name ? unit.name.trim() : '');
+    for (let unit of units) {
+        // apply defaults
+        unit = Object.assign(DEFAULT_UNIT_DEF, unit);
+
+        // test for key types
+        if (typeof unit.name !== 'string')
+            throw new Error('Key \'name\' from unit ' + unit.name + ' has an invalid type. ' + 
+                'Expected: string, Given: ' + typeof unit.addProps);
+
+        unit.name = unit.name.trim();
         if (!unit.name)
             throw new Error('Missing or empty unit name. The unit name must at least contain one regular character.');
 
@@ -46,14 +59,22 @@ module.exports = async function (units) {
         if (array.length < 2) {
             unit.name = unit.name  + '.service';
             array.push('service');
-        }        
+        }
+
+        if (typeof unit.addProps !== 'string')
+            throw new Error('Key \'addProps\' from unit ' + unit.name + ' has an invalid type. ' + 
+                'Expected: undefined|string, Given: ' + typeof unit.addProps);
+
+        if (typeof unit.defaults !== 'boolean')
+            throw new Error('Key \'defaults\' from unit ' + unit.name + ' has an invalid type. ' + 
+                'Expected: boolean, Given: ' + typeof unit.addProps);
 
         if (result[unit.name])
             throw new Error('Unit with name \'' + unit.name + '\' already requested.');
 
         const properties = {UnitType: array[1]};
         // request properties to given unit
-        const output = await shellExec('systemctl show ' + unit.name + ' --property ' + getProperties(array[1], unit.addProps));
+        const output = await shellExec('systemctl show ' + unit.name + ' --property ' + getProperties(array[1], unit.addProps, unit.defaults));
         // parse down given properties to objects
         output.stdout.split('\n').forEach(element => {
             // skip empty new lines

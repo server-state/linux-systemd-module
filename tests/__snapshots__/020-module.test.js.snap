@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test module options keys with one unit Test option 'defaults' should do not use defaults 1`] = `
+Object {
+  "simple.simple": Object {
+    "": "",
+    "UnitType": "simple",
+    "additionalPath": "",
+  },
+}
+`;
+
+exports[`Test module options keys with one unit Test option 'defaults' should do not use defaults with given properties 1`] = `
+Object {
+  "simple.simple": Object {
+    "": "",
+    "Id": "placeholderId",
+    "Requires": "",
+    "UnitType": "simple",
+  },
+}
+`;
