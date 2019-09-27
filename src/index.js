@@ -18,11 +18,11 @@ function convertProperty(value) {
     return value;
 }
 
-const DEFAULT_UNIT_DEF = {
+const DEFAULT_UNIT_DEF = Object.freeze({
     name: '',
     addProps: '',
     defaults: true
-};
+});
 
 /**
  * A module for the server-state system
@@ -44,7 +44,7 @@ module.exports = async function (units) {
 
     for (let unit of units) {
         // apply defaults
-        unit = Object.assign(DEFAULT_UNIT_DEF, unit);
+        unit = Object.assign({}, DEFAULT_UNIT_DEF, unit);
 
         // test for key types
         if (typeof unit.name !== 'string')

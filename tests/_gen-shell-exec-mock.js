@@ -18,6 +18,8 @@ jest.mock('shell-exec', () => {
         // DEBUG
         //console.log('Command:\n' + command);
 
+        let stderr = '';
+
         const commandArguments = command.split(' ');
         // test initial command
         if (commandArguments[0] == ! 'systemctl' || commandArguments[1] == ! 'show')
@@ -26,29 +28,33 @@ jest.mock('shell-exec', () => {
         // test given unit
         const unitSplit = commandArguments[2].split('.');
         if (unitSplit.length < 2 || unitSplit[1].trim().length === 0)
-            throw new Error('No unit name given!');
+            stderr = 'No unit name given!';
         // test given command argument
         if (!commandArguments[3] || commandArguments[3] == ! '--property')
             throw new Error('Invalid command argument given! Target: ' +
                 '\'--property\', actual: \'' + commandArguments[3] + '\'');
         // test that are any properties given
         if (!commandArguments[4])
-            throw new Error('No properties are given!');
+            stderr = 'No properties are given!';
 
         const properties = commandArguments[4].split(',');
 
         let result = '';
-        properties.forEach(element => {
-            result = result + 
-                element + '=' + (PROPERTY_LIST[element] ? PROPERTY_LIST[element] : '') + '\n';
-        });
+        if (!stderr) {
+            properties.forEach(element => {
+                if (element) {
+                    result = result + 
+                        element + '=' + (PROPERTY_LIST[element] ? PROPERTY_LIST[element] : '') + '\n';
+                }
+            });
+        }
 
         // DEBUG
         //console.log('Result:\n' + result);
 
         return {
             stdout: result,
-            stderr: '',
+            stderr: stderr,
             cmd: command,
             code: 0
         };

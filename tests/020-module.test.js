@@ -156,85 +156,69 @@ describe('Test given properties via argument calls', () => {
             expect(result[fullName]).toHaveProperty(property);
         }
 
-        console.log(shellExec.mock.calls);
-
         expect(shellExec).toBeCalledWith(generateCommand(fullName, 'other'));
     });
 });
 
 
-describe('Test module options keys with one unit', () => {
-    const types = ['null', 'undefined', 'boolean', 'number', 'string', 'object', 'array'];
-    const typeExamples = {
-        null: null,
-        undefined: undefined,
-        boolean: false,
-        number: 3.141,
-        string: 'I am a string',
-        object: { prop1: 'prop1', prop2: 'prop2' },
-        array: ['I', 'am', 'an', 'array']
-    };
+const types = ['null', 'undefined', 'boolean', 'number', 'string', 'object', 'array'];
+const typeExamples = {
+    null: null,
+    undefined: undefined,
+    boolean: false,
+    number: 3.141,
+    string: 'I am a string',
+    object: { prop1: 'prop1', prop2: 'prop2' },
+    array: ['I', 'am', 'an', 'array']
+};
 
-    const OPTIONS_TESTS = [
-        // [
-        //     'name',
-        //     'string',
-        //     [
-        //         [
-        //             'desc',
-        //             {}
-        //         ]
-        //     ]
-        // ],
-        // [
-        //     'addProps',
-        //     'string',
-        //     [
-        //         [
-        //             'desc',
-        //             {}
-        //         ]
-        //     ]
-        // ],
-        [
-            'defaults',
-            'boolean',
-            [
-                // [
-                //     'use defaults',
-                //     {name: 'simple.other', defaults: true}
-                // ],
-                [
-                    'do not use defaults',
-                    {name: 'simple.simple', defaults: false}
-                ],
-                [
-                    'do not use defaults with given properties',
-                    {name: 'simple.simple', 'addProps': 'Id,Requires', defaults: false}
-                ]
-            ]
-        ]
-    ];
 
-    describe.each(OPTIONS_TESTS)('Test option \'%s\'', (name, type, tests) => {
-        // basic member tests
-        it.each(types.filter(testType => testType !== type))('should reject when \'' + name + '\' is given with type: %s', (testType) => {
-            let obj = {name: 'simple.simple'};
-            obj[name] = typeExamples[testType];
+const OPTION_DEFAULTS_TESTS = [
+    // [
+    //     'use defaults',
+    //     {name: 'simple.other', defaults: true}
+    // ],
+    [
+        'do not use defaults',
+        { name: 'simple.simple', defaults: false }
+    ],
+    [
+        'do not use defaults with given properties',
+        { name: 'simple.simple', 'addProps': 'Id,Requires', defaults: false }
+    ]
+];
 
-            expect(serverModule([obj])).rejects.toThrow();
-        });
+describe('Test module option \'addProps\' with one unit', () => {
+    // basic member tests
+    it.each(types.filter(testType => testType !== 'string'))('should reject when \'addProps\' is given with type: %s', async (testType) => {
+        let obj = { name: 'simple.simple', addProps: typeExamples[testType] };
 
-        it('should pass when \'' + name + '\' is given with type: ' + type, () => {
-            let obj = {name: 'simple.simple'};
-            obj[name] = typeExamples[type];
+        expect(serverModule([obj])).rejects.toThrow();
+    });
 
-            expect(serverModule([obj])).resolves.toBeTruthy();
-        });
+    it('should pass when \'defaults\' is given with type: boolean', async () => {
+        let obj = { name: 'simple.simple', addProps: 'Requires' };
 
-        // special member cases (defined in OPTIONS_TESTS)
-        it.each(tests)('should %s', (_desc, options) => {
-            expect(serverModule([options])).resolves.toMatchSnapshot();
-        });
+        expect(await serverModule([obj])).toBeTruthy();
+    });
+});
+
+describe('Test module option \'defaults\' with one unit', () => {
+    // basic member tests
+    it.each(types.filter(testType => testType !== 'boolean'))('should reject when \'defaults\' is given with type: %s', async (testType) => {
+        let obj = { name: 'simple.simple', defaults: typeExamples[testType] };
+
+        expect(serverModule([obj])).rejects.toThrow();
+    });
+
+    it('should pass when \'defaults\' is given with type: boolean', async () => {
+        let obj = { name: 'simple.simple', defaults: true };
+
+        expect(await serverModule([obj])).toBeTruthy();
+    });
+
+    // special member cases (defined in OPTIONS_TESTS)
+    it.each(OPTION_DEFAULTS_TESTS)('should %s', async (_desc, options) => {
+        expect(await serverModule([options])).toMatchSnapshot();
     });
 });
