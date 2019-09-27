@@ -4,11 +4,19 @@ const constants = require('../src/constants');
 const shellExec = require('shell-exec');
 const serverModule = require('../src');
 
-function generateCommand(fullName, type, addProps) {
-    return 'systemctl show ' + fullName +
-        ' --property ' + constants.PROPERTIES.any +
+function generatePropertyString(type, addProps) {
+    return constants.PROPERTIES.any +
         (constants.PROPERTIES[type] ? ',' + constants.PROPERTIES[type] : '') +
         (addProps ? ',' + addProps : '');
+}
+
+function generateCommand(fullName, type, addProps) {
+    return 'systemctl show ' + fullName +
+        ' --property ' + generatePropertyString(type, addProps);
+}
+
+function generatePropertyArray(type, addProps) {
+    return generatePropertyString(type, addProps).split(',');
 }
 
 
@@ -55,11 +63,11 @@ const INVALID_OPTIONS = [
     ],
     [
         'empty unit name',
-        [{name: null}]
+        [{ name: null }]
     ],
     [
         'whitespace unit name',
-        [{name: '  '}]
+        [{ name: '  ' }]
     ]
 ];
 
@@ -70,70 +78,84 @@ describe('Test invalid given options', () => {
 });
 
 
-const PROPERTY_DEFINITIONS = [
+const TYPES_PROPERTIES = [
     [
         'service',
-        'plain service unit',
-        'plainService.service',
-        'plainService.service',
-        ''
-    ],
-    [
-        'service',
-        'implied service unit',
-        'impliedService',
-        'impliedService.service',
-        ''
-    ],
-    [
-        'service',
-        'service unit with additional properties',
-        'additionalService.service',
-        'additionalService.service',
         'GuessMainPID'
     ],
     [
         'mount',
-        'plain mount unit',
-        'plainMount.mount',
-        'plainMount.mount',
-        ''
-    ],
-    [
-        'mount',
-        'mount unit with additional properties',
-        'additionalMount.mount',
-        'additionalMount.mount',
         'Delegate'
     ],
     [
         'slice',
-        'plain slice unit',
-        'plainSlice.slice',
-        'plainSlice.slice',
-        ''
-    ],
-    [
-        'slice',
-        'slice unit with additional properties',
-        'additionalSlice.slice',
-        'additionalSlice.slice',
         'ControlGroup'
     ],
-    [ // virtual test type
-        'other',
-        'other unit type',
-        'otherUnit.other',
-        'otherUnit.other',
-        ''
+    [
+        'automount',
+        'Where'
+    ],
+    [
+        'timer',
+        'TimersCalendar'
+    ],
+    [
+        'swap',
+        'ExecActivate'
+    ],
+    [
+        'path',
+        'additionalPath'
     ]
 ];
 
 describe('Test given properties via argument calls', () => {
-    it.each(PROPERTY_DEFINITIONS)('should call with %s properties while given %s', (type, _description, name, fullName, addProps) => {
-        const argument = [{ name: name, addProps: addProps }];
-        expect(serverModule(argument)).resolves.toMatchSnapshot();
+    it('should call and resolves with given implied service unit', async () => {
+        const name = 'impliedservice';
+        const fullName = name + '.service';
+        const result = await serverModule([{ name: name }]);
+
+        expect(result[fullName]).toBeDefined();
+        for (const property of generatePropertyArray('service')) {
+            expect(result[fullName]).toHaveProperty(property);
+        }
+
+        expect(shellExec).toBeCalledWith(generateCommand(fullName, 'service'));
+    });
+
+    it.each(TYPES_PROPERTIES)('should call and resolves with given plain unit of type %s', async (type) => {
+        const fullName = 'plain' + type + '.' + type;
+        const result = await serverModule([{ name: fullName }]);
+
+        expect(result[fullName]).toBeDefined();
+        for (const property of generatePropertyArray(type)) {
+            expect(result[fullName]).toHaveProperty(property);
+        }
+
+        expect(shellExec).toBeCalledWith(generateCommand(fullName, type));
+    });
+
+    it.each(TYPES_PROPERTIES)('should call and resolves with given unit of type %s and additional properties %s', async (type, addProps) => {
+        const fullName = 'additional' + type + '.' + type;
+        const result = await serverModule([{ name: fullName, addProps: addProps }]);
+
+        expect(result[fullName]).toBeDefined();
+        for (const property of generatePropertyArray(type, addProps)) {
+            expect(result[fullName]).toHaveProperty(property);
+        }
 
         expect(shellExec).toBeCalledWith(generateCommand(fullName, type, addProps));
+    });
+
+    it('should call and resolves with any other unit', async () => {
+        const fullName = 'other.other';
+        const result = await serverModule([{ name: fullName }]);
+
+        expect(result[fullName]).toBeDefined();
+        for (const property of generatePropertyArray('other')) {
+            expect(result[fullName]).toHaveProperty(property);
+        }
+
+        expect(shellExec).toBeCalledWith(generateCommand(fullName, 'other'));
     });
 });
