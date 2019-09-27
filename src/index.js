@@ -11,11 +11,6 @@ function convertProperty(value) {
     if (value === 'yes' || value === 'no')
         return (value === 'yes');
     
-    //if (/^[-+]?\d+$/.test(value))
-    //if (Number.isSafeInteger(value))
-    //    return parseInt(value);
-
-    //if (/[-+]?([0-9]*\.[0-9]+|[0-9]+)/.test(value))
     const conv = parseFloat(value);
     if (!Number.isNaN(conv))
         return conv;
@@ -36,7 +31,8 @@ function convertProperty(value) {
  */
 module.exports = async function (units) {
     if (!units || !units.length)
-        throw new Error('No units were specified!');
+        throw new Error('No units were specified. ' + 
+            'Expected argument to be of type object[], with required member \'name\' and a optional member \'addProps\' both type of string.');
 
     const result = {};
 
@@ -44,7 +40,7 @@ module.exports = async function (units) {
         // clean up given unit name
         unit.name = (unit.name ? unit.name.trim() : '');
         if (!unit.name)
-            throw new Error('Missing or empty unit name!');
+            throw new Error('Missing or empty unit name. The unit name must at least contain one regular character.');
 
         let array = unit.name.split('.');
         if (array.length < 2) {
@@ -53,7 +49,7 @@ module.exports = async function (units) {
         }        
 
         if (result[unit.name])
-            throw new Error('Unit already requested: ' + unit);
+            throw new Error('Unit with name \'' + unit.name + '\' already requested.');
 
         const properties = {UnitType: array[1]};
         // request properties to given unit
