@@ -12,25 +12,25 @@ A module to view the current status of your systemd services. Its response is a 
 This object contains the properties of the given unit as key/value pairs, for example:
 ```json
 {
-  'lightdm.service': {
-    UnitType: 'service',
-    Type: 'dbus',
-    Restart: 'always',
-    RemainAfterExit: false,
-    MainPID: 759,
-    Result: 'success',
-    CleanResult: 'success',
-    MemoryCurrent: 197627904,
-    TasksCurrent: 6,
-    Nice: 0,
-    Id: 'lightdm.service',
-    Description: 'Light Display Manager',
-    LoadState: 'loaded',
-    ActiveState: 'active',
-    SubState: 'running',
-    UnitFileState: 'enabled',
-    ActiveEnterTimestamp: 'Fri 2019-09-27 18:25:59 CEST',
-    ActiveEnterTimestampMonotonic: 86125951
+  "lightdm.service": {
+    "UnitType": "service",
+    "Type": "dbus",
+    "Restart": "always",
+    "RemainAfterExit": false,
+    "MainPID": 759,
+    "Result": "success",
+    "CleanResult": "success",
+    "MemoryCurrent": 197627904,
+    "TasksCurrent": 6,
+    "Nice": 0,
+    "Id": "lightdm.service",
+    "Description": "Light Display Manager",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running",
+    "UnitFileState": "enabled",
+    "ActiveEnterTimestamp": "Fri 2019-09-27 18:25:59 CEST",
+    "ActiveEnterTimestampMonotonic": 86125951
   }
 }
 ```
@@ -57,46 +57,46 @@ to your current api server.
 This results in the following output:
 ```json
 {
-  'apache2.service': {
-    UnitType: 'service',
-    Type: '',
-    Restart: false,
-    RemainAfterExit: false,
-    MainPID: 0,
-    Result: 'success',
-    CleanResult: 'success',
-    MemoryCurrent: '[not set]',
-    TasksCurrent: '[not set]',
-    Nice: 0,
-    Id: 'apache2.service',
-    Description: 'apache2.service',
-    LoadState: 'not-found',
-    ActiveState: 'inactive',
-    SubState: 'dead',
-    UnitFileState: '',
-    ActiveEnterTimestamp: '',
-    ActiveEnterTimestampMonotonic: 0
+  "apache2.service": {
+    "UnitType": "service",
+    "Type": "",
+    "Restart": false,
+    "RemainAfterExit": false,
+    "MainPID": 0,
+    "Result": "success",
+    "CleanResult": "success",
+    "MemoryCurrent": "[not set]",
+    "TasksCurrent": "[not set]",
+    "Nice": 0,
+    "Id": "apache2.service",
+    "Description": "apache2.service",
+    "LoadState": "not-found",
+    "ActiveState": "inactive",
+    "SubState": "dead",
+    "UnitFileState": "",
+    "ActiveEnterTimestamp": "",
+    "ActiveEnterTimestampMonotonic": 0
   },
-  'home.mount': {
-    UnitType: 'mount',
-    Where: '/home',
-    What: '/dev/sda2',
-    Options: 'rw,relatime',
-    Type: 'ext4',
-    LazyUnmount: false,
-    Result: 'success',
-    Id: 'home.mount',
-    Description: '/home',
-    LoadState: 'loaded',
-    ActiveState: 'active',
-    SubState: 'mounted',
-    UnitFileState: 'generated',
-    ActiveEnterTimestamp: 'Fri 2019-09-27 18:25:58 CEST',
-    ActiveEnterTimestampMonotonic: 84831816
+  "home.mount": {
+    "UnitType": "mount",
+    "Where": "/home",
+    "What": "/dev/sda3",
+    "Options": "rw,relatime",
+    "Type": "ext4",
+    "LazyUnmount": false,
+    "Result": "success",
+    "Id": "home.mount",
+    "Description": "/home",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "mounted",
+    "UnitFileState": "generated",
+    "ActiveEnterTimestamp": "Fri 2019-09-27 18:25:58 CEST",
+    "ActiveEnterTimestampMonotonic": 84831816
   },
-  'user.slice': {
-    UnitType: 'slice',
-    TasksCurrent: 647
+  "user.slice": {
+    "UnitType": "slice",
+    "TasksCurrent": 647
   }
 }
 ```
@@ -105,7 +105,7 @@ This results in the following output:
 
 You can adjust the properties from the results in the options array.
 
-The key `name` is mandatory and defines the systemd unit. 
+The `name` key is mandatory and defines the systemd unit. 
 For different unit types, use the unit extension from systemd, for example `system.slice` or `boot.mount`.
 If no extension is specified, a `service` unit is assumed (systemd default).
 
