@@ -95,6 +95,7 @@ This results in the following output:
     ActiveEnterTimestampMonotonic: 84831816
   },
   'user.slice': {
+    UnitType: 'slice',
     TasksCurrent: 647
   }
 }
