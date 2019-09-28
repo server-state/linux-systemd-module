@@ -1,5 +1,5 @@
 {
-  "name": "systemd-module",
+  "name": "@server-state/systemd-module",
   "version": "0.0.9",
   "description": "A module to view the current status of your systemd services",
   "main": "index.js",
