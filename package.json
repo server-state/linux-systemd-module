@@ -25,5 +25,13 @@
     "jest": "^24.9.0",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7"
+  },
+  "dependencies": {
+    "shell-exec": "^1.0.2"
+  },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "/tests/_gen-shell-exec-mock.js"
+    ]
   }
 }
