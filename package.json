@@ -20,7 +20,7 @@
   "homepage": "https://github.com/server-state/systemd-module#readme",
   "devDependencies": {
     "coveralls": "^3.0.6",
-    "eslint": "^6.3.0",
+    "eslint": "^7.0.0",
     "jest": "^26.0.1",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7"
